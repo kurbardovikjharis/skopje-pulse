@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":resources"))
     implementation(project(":ui-sensors"))
     implementation(project(":ui-sensordetails"))
 

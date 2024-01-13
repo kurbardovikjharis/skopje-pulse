@@ -4,12 +4,12 @@ import com.haris.sensors.repositories.SensorsRepository
 import javax.inject.Inject
 
 internal class GetSensorsInteractor @Inject constructor(
-    private val sensorsRepository: SensorsRepository
+    private val repository: SensorsRepository
 ) {
 
-    val flow = sensorsRepository.data
+    val flow = repository.data
 
     suspend operator fun invoke() {
-        sensorsRepository.getSensors()
+        repository.getSensors()
     }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SkopjePulse</string>
+
+    <string name="back">Back</string>
 </resources>
