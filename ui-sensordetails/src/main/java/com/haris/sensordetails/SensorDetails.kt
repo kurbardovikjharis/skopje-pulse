@@ -112,12 +112,8 @@ private fun SuccessView(
             }
         }
 
-        val avg6 = if (state.isPM10Checked) state.avg6h10PM else state.avg6h25PM
-        val avg12 = if (state.isPM10Checked) state.avg12h10PM else state.avg12h25PM
-        val avg24 = if (state.isPM10Checked) state.avg24h10PM else state.avg24h25PM
-
-        Text(text = stringResource(id = R.string.avg_data, "6", avg6))
-        Text(text = stringResource(id = R.string.avg_data, "12", avg12))
-        Text(text = stringResource(id = R.string.avg_data, "24", avg24))
+        Text(text = stringResource(id = R.string.avg_data, "6", state.avg6h))
+        Text(text = stringResource(id = R.string.avg_data, "12", state.avg12h))
+        Text(text = stringResource(id = R.string.avg_data, "24", state.avg24h))
     }
 }
