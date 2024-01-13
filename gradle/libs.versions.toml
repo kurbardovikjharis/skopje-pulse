@@ -12,6 +12,10 @@ kotlin = "1.9.20"
 material3 = "1.1.2"
 navigationCompose = "2.7.6"
 retrofit = "2.9.0"
+junit = "4.13.2"
+androidx-test-ext-junit = "1.1.5"
+espresso-core = "3.5.1"
+timber = "5.0.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
@@ -26,6 +30,10 @@ converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.r
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

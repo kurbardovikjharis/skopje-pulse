@@ -16,3 +16,4 @@ rootProject.name = "SkopjePulse"
 include ':app'
 include ':ui-sensors'
 include ':ui-sensordetails'
+include ':domain'

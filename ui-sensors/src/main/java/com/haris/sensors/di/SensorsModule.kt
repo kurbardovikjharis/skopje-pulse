@@ -1,5 +1,8 @@
-package com.haris.sensors.repositories
+package com.haris.sensors.di
 
+import com.haris.sensors.repositories.SensorsApi
+import com.haris.sensors.repositories.SensorsRepository
+import com.haris.sensors.repositories.SensorsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

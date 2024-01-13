@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.activity.compose)
@@ -56,4 +58,8 @@ dependencies {
     implementation(libs.converter.moshi)
 
     implementation(libs.androidx.hilt.navigation.compose)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
