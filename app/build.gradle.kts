@@ -59,6 +59,9 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
 }
 
 // Allow references to generated code
