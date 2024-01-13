@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.haris.resources.R
 
 @Composable
 fun SensorDetails(navigateUp: () -> Unit) {
@@ -42,8 +43,8 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
                         Icon(
-                            painter = painterResource(com.haris.resources.R.drawable.baseline_arrow_back_24),
-                            contentDescription = stringResource(id = com.haris.resources.R.string.back)
+                            painter = painterResource(R.drawable.baseline_arrow_back_24),
+                            contentDescription = stringResource(id = R.string.back)
                         )
                     }
                 }
@@ -103,16 +104,20 @@ private fun SuccessView(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Switch(checked = state.isPM10Checked, onCheckedChange = onPM10Checked)
-                Text(text = "PM10")
+                Text(text = stringResource(id = R.string.pm10))
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Switch(checked = state.isPM25Checked, onCheckedChange = onPM25Checked)
-                Text(text = "PM25")
+                Text(text = stringResource(id = R.string.pm25))
             }
         }
 
-        Text(text = "Average data for the past 6 hours: ${state.average6h}")
-        Text(text = "Average data for the past 12 hours: ${state.average12h}")
-        Text(text = "Average data for the past 24 hours: ${state.average24h}")
+        val avg6 = if (state.isPM10Checked) state.avg6h10PM else state.avg6h25PM
+        val avg12 = if (state.isPM10Checked) state.avg12h10PM else state.avg12h25PM
+        val avg24 = if (state.isPM10Checked) state.avg24h10PM else state.avg24h25PM
+
+        Text(text = stringResource(id = R.string.avg_data, "6", avg6))
+        Text(text = stringResource(id = R.string.avg_data, "12", avg12))
+        Text(text = stringResource(id = R.string.avg_data, "24", avg24))
     }
 }

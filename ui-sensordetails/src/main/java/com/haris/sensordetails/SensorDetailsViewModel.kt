@@ -39,9 +39,12 @@ internal class SensorDetailsViewModel @Inject constructor(
                 SensorDetailsViewState.Success(
                     isPM10Checked = isPM10Checked,
                     isPM25Checked = isPM25Checked,
-                    average6h = data?.average6h ?: "",
-                    average12h = data?.average12h ?: "",
-                    average24h = data?.average24h ?: ""
+                    avg6h10PM = data?.avg6h10PM ?: "",
+                    avg12h10PM = data?.avg12h10PM ?: "",
+                    avg24h10PM = data?.avg24h10PM ?: "",
+                    avg6h25PM = data?.avg6h25PM ?: "",
+                    avg12h25PM = data?.avg12h25PM ?: "",
+                    avg24h25PM = data?.avg24h25PM ?: ""
                 )
             }
 
@@ -78,9 +81,12 @@ internal sealed interface SensorDetailsViewState {
     data class Success(
         val isPM10Checked: Boolean,
         val isPM25Checked: Boolean,
-        val average6h: String,
-        val average12h: String,
-        val average24h: String
+        val avg6h10PM: String,
+        val avg12h10PM: String,
+        val avg24h10PM: String,
+        val avg6h25PM: String,
+        val avg12h25PM: String,
+        val avg24h25PM: String
     ) : SensorDetailsViewState
 
     data class Error(val message: String) : SensorDetailsViewState
