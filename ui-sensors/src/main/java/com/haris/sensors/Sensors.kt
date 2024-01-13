@@ -44,7 +44,14 @@ private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
                     SuccessView(sensors = state.sensors, navigate = navigate)
                 }
 
-                is SensorsViewState.Error -> {}
+                is SensorsViewState.Error -> {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp),
+                        text = state.message
+                    )
+                }
 
                 is SensorsViewState.Loading -> {
                     CircularProgressIndicator(
