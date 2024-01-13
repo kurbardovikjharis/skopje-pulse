@@ -15,11 +15,7 @@ fun List<SensorDto>.toSensorEntityList(): List<SensorEntity> {
 
 fun SensorDto.toSensorEntity(): SensorEntity {
     return SensorEntity(
-        sensorId = this.sensorId ?: "",
-        position = this.position ?: "",
-        type = this.type ?: "",
-        description = description ?: "",
-        comments = comments ?: "",
-        status = status ?: ""
+        sensorId = sensorId ?: "",
+        description = description ?: ""
     )
 }

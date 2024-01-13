@@ -71,7 +71,7 @@ private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
 private fun SuccessView(sensors: List<SensorEntity>, navigate: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
             Spacer(modifier = Modifier.height(16.dp))
@@ -90,23 +90,8 @@ private fun Item(item: SensorEntity, navigate: (String) -> Unit) {
         onClick = { navigate(item.sensorId) }
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            if (item.sensorId.isNotEmpty()) {
-                Text(text = "sensorId: ${item.sensorId}")
-            }
             if (item.description.isNotEmpty()) {
-                Text(text = "description: ${item.description}")
-            }
-            if (item.comments.isNotEmpty()) {
-                Text(text = "comments: ${item.comments}")
-            }
-            if (item.type.isNotEmpty()) {
-                Text(text = "type: ${item.type}")
-            }
-            if (item.status.isNotEmpty()) {
-                Text(text = "status: ${item.status}")
-            }
-            if (item.position.isNotEmpty()) {
-                Text(text = "position: ${item.position}")
+                Text(text = item.description)
             }
         }
     }

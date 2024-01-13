@@ -6,5 +6,5 @@
     <string name="pm10">pm10</string>
     <string name="pm25">pm25</string>
 
-    <string name="avg_data">Average data for the past %1$s hours %2$s</string>
+    <string name="avg_data">Average data for the past %1$s hours: %2$s</string>
 </resources>
