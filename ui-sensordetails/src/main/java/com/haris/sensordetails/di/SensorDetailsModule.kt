@@ -6,18 +6,21 @@ import com.haris.sensordetails.repositories.SensorDetailsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 internal object SensorDetailsModule {
 
+    @Singleton
     @Provides
     fun provideApi(retrofit: Retrofit): SensorDetailsApi {
         return retrofit.create(SensorDetailsApi::class.java)
     }
 
+    @Singleton
     @Provides
     fun provideRepository(api: SensorDetailsApi): SensorDetailsRepository {
         return SensorDetailsRepositoryImpl(api)
