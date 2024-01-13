@@ -1,12 +1,18 @@
 package com.haris.skopjepulse
 
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.*
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
+import com.haris.sensordetails.SensorDetails
+import com.haris.sensors.Sensors
 
 internal sealed class Screen(val route: String) {
     data object Sensors : Screen("sensors")
@@ -35,10 +41,6 @@ internal fun AppNavigation(
     AnimatedNavHost(
         navController = navController,
         startDestination = Screen.Sensors.route,
-        enterTransition = { defaultEnterTransition(initialState, targetState) },
-        exitTransition = { defaultExitTransition(initialState, targetState) },
-        popEnterTransition = { defaultPopEnterTransition() },
-        popExitTransition = { defaultPopExitTransition() },
         modifier = modifier,
     ) {
         addSensorsTopLevel(navController)
@@ -66,10 +68,10 @@ private fun NavGraphBuilder.addSensors(
     composable(
         route = LeafScreen.Sensors.createRoute(root)
     ) {
-//        Home(navigateToCreate = {
-//            val value = it ?: -1L
-//            navController.navigate(LeafScreen.Create.createRoute(root, value))
-//        })
+        Sensors {
+            val value = it
+            navController.navigate(LeafScreen.SensorDetails.createRoute(root, value))
+        }
     }
 }
 
@@ -80,10 +82,10 @@ private fun NavGraphBuilder.addSensorDetails(
 ) {
     composable(
         route = LeafScreen.SensorDetails.createRoute(root),
-//        arguments = listOf(
-//            navArgument("id") { type = NavType.LongType },
-//        ),
+        arguments = listOf(
+            navArgument("id") { type = NavType.LongType },
+        ),
     ) {
-//        SensorDetails(navigateUp = navController::navigateUp)
+        SensorDetails(navController::navigateUp)
     }
 }
