@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface SensorDetailsRepository {
 
-    val data: Flow<NetworkResult<List<SensorDetailsEntity>>>
+    val data: Flow<NetworkResult<SensorDetailsEntity>>
 
     suspend fun getSensors()
 }

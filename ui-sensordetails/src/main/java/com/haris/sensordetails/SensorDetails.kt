@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.haris.sensordetails.data.SensorDetailsEntity
 
 @Composable
 fun SensorDetails(navigateUp: () -> Unit) {
@@ -113,33 +111,8 @@ private fun SuccessView(
             }
         }
 
-        Text(text = "Average data for the past 6 hours")
-        Text(text = "Average data for the past 12 hours")
-        Text(text = "Average data for the past 24 hours")
-    }
-}
-
-@Composable
-private fun Item(item: SensorDetailsEntity) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            if (item.sensorId.isNotEmpty()) {
-                Text(text = "sensorId: ${item.sensorId}")
-            }
-            if (item.stamp.isNotEmpty()) {
-                Text(text = "description: ${item.stamp}")
-            }
-            if (item.type.isNotEmpty()) {
-                Text(text = "comments: ${item.type}")
-            }
-            if (item.position.isNotEmpty()) {
-                Text(text = "type: ${item.position}")
-            }
-            if (item.value.isNotEmpty()) {
-                Text(text = "status: ${item.value}")
-            }
-        }
+        Text(text = "Average data for the past 6 hours: ${state.average6h}")
+        Text(text = "Average data for the past 12 hours: ${state.average12h}")
+        Text(text = "Average data for the past 24 hours: ${state.average24h}")
     }
 }

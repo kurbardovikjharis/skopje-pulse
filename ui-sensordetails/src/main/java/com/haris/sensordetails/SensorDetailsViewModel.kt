@@ -3,7 +3,6 @@ package com.haris.sensordetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haris.data.network.NetworkResult
-import com.haris.sensordetails.data.SensorDetailsEntity
 import com.haris.sensordetails.interactors.GetSensorDetailsInteractor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,10 +35,13 @@ internal class SensorDetailsViewModel @Inject constructor(
     ) { sensorDetailsResult, isPM10Checked, isPM25Checked ->
         when (sensorDetailsResult) {
             is NetworkResult.Success -> {
+                val data = sensorDetailsResult.data
                 SensorDetailsViewState.Success(
                     isPM10Checked = isPM10Checked,
                     isPM25Checked = isPM25Checked,
-                    sensors = sensorDetailsResult.data ?: emptyList()
+                    average6h = data?.average6h ?: "",
+                    average12h = data?.average12h ?: "",
+                    average24h = data?.average24h ?: ""
                 )
             }
 
@@ -76,7 +78,9 @@ internal sealed interface SensorDetailsViewState {
     data class Success(
         val isPM10Checked: Boolean,
         val isPM25Checked: Boolean,
-        val sensors: List<SensorDetailsEntity>
+        val average6h: String,
+        val average12h: String,
+        val average24h: String
     ) : SensorDetailsViewState
 
     data class Error(val message: String) : SensorDetailsViewState

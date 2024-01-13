@@ -11,10 +11,10 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
     private val api: SensorDetailsApi
 ) : SensorDetailsRepository {
 
-    private val _data: MutableStateFlow<NetworkResult<List<SensorDetailsEntity>>> =
+    private val _data: MutableStateFlow<NetworkResult<SensorDetailsEntity>> =
         MutableStateFlow(NetworkResult.None())
 
-    override val data: Flow<NetworkResult<List<SensorDetailsEntity>>>
+    override val data: Flow<NetworkResult<SensorDetailsEntity>>
         get() = _data
 
     override suspend fun getSensors() {
