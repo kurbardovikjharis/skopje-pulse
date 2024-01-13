@@ -3,20 +3,18 @@ package com.haris.sensordetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -61,7 +59,11 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
         ) {
             when (state) {
                 is SensorDetailsViewState.Success -> {
-                    SuccessView(sensors = state.sensors)
+                    SuccessView(
+                        state = state,
+                        onPM10Checked = { checked -> viewModel.onPM10Checked(checked) },
+                        onPM25Checked = { checked -> viewModel.onPM25Checked(checked) }
+                    )
                 }
 
                 is SensorDetailsViewState.Error -> {
@@ -88,17 +90,32 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
 }
 
 @Composable
-private fun SuccessView(sensors: List<SensorDetailsEntity>) {
-    LazyColumn(
+private fun SuccessView(
+    state: SensorDetailsViewState.Success,
+    onPM10Checked: (Boolean) -> Unit,
+    onPM25Checked: (Boolean) -> Unit
+) {
+    Column(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Switch(checked = state.isPM10Checked, onCheckedChange = onPM10Checked)
+                Text(text = "PM10")
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Switch(checked = state.isPM25Checked, onCheckedChange = onPM25Checked)
+                Text(text = "PM25")
+            }
         }
-        items(sensors) {
-            Item(item = it)
-        }
+
+        Text(text = "Average data for the past 6 hours")
+        Text(text = "Average data for the past 12 hours")
+        Text(text = "Average data for the past 24 hours")
     }
 }
 
