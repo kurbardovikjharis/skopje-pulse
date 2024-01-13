@@ -33,6 +33,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.4"
+    }
 }
 
 dependencies {
@@ -49,6 +55,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
 
-    implementation(libs.accompanist.navigation.animation)
     implementation(libs.androidx.hilt.navigation.compose)
 }

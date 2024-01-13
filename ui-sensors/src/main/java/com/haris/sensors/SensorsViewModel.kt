@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haris.sensors.data.SensorsDto
 import com.haris.sensors.interactors.GetSensorsInteractor
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
+@HiltViewModel
 internal class SensorsViewModel @Inject constructor(
     getSensorsInteractor: GetSensorsInteractor
 ) : ViewModel() {
