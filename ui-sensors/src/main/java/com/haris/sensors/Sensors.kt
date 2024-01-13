@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.haris.sensors.data.SensorsDto
+import com.haris.sensors.data.SensorEntity
 
 @Composable
 fun Sensors(navigate: (String) -> Unit) {
@@ -39,21 +39,29 @@ private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center)
-                )
-            } else {
-                SuccessView(sensors = state.sensors, navigate = navigate)
+            when (state) {
+                is SensorsViewState.Success -> {
+                    SuccessView(sensors = state.sensors, navigate = navigate)
+                }
+
+                is SensorsViewState.Error -> {}
+
+                is SensorsViewState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+
+                is SensorsViewState.Empty -> {}
             }
         }
     }
 }
 
 @Composable
-private fun SuccessView(sensors: List<SensorsDto>, navigate: (String) -> Unit) {
+private fun SuccessView(sensors: List<SensorEntity>, navigate: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -69,7 +77,7 @@ private fun SuccessView(sensors: List<SensorsDto>, navigate: (String) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Item(item: SensorsDto, navigate: (String) -> Unit) {
+private fun Item(item: SensorEntity, navigate: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = { navigate(item.sensorId) }

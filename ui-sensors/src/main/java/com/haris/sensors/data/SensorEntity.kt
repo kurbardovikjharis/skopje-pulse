@@ -1,6 +1,6 @@
 package com.haris.sensors.data
 
-data class SensorsDto(
+data class SensorEntity(
     val sensorId: String,
     val position: String,
     val type: String,
