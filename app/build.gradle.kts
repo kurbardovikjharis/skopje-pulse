@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.haris.skopjepulse"
-        minSdk = 21
+        minSdk = 24
         versionCode = 1
         versionName = "1.0"
 
