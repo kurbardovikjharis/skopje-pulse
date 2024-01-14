@@ -77,6 +77,8 @@ internal class Mapper @Inject constructor() {
             }
         }
 
+        removePast24HourValues(now)
+
         val svc = SensorValueCounter(
             value6h10pm = (sensorValueCounter?.value6h10pm ?: 0.0) + value6h10pm,
             value12h10pm = (sensorValueCounter?.value12h10pm ?: 0.0) + value12h10pm,
@@ -103,6 +105,42 @@ internal class Mapper @Inject constructor() {
             avg6h25PM = (svc.value6h25pm / svc.counter6h25pm).toString(),
             avg12h25PM = (svc.value12h25pm / svc.counter12h25pm).toString(),
             avg24h25PM = (svc.value24h25pm / svc.counter24h25pm).toString()
+        )
+    }
+
+    private fun removePast24HourValues(now:LocalDateTime) {
+        val sensorValueCounter = sensorValueCounter ?: return
+        val minus12h = now.minus(12, ChronoUnit.HOURS)
+        val minus24h = now.minus(24, ChronoUnit.HOURS)
+
+        var value24h10pm = 0.0
+        var value24h25pm = 0.0
+
+        var counter24h10pm = 0
+        var counter24h25pm = 0
+
+        for (item in sensorValues) {
+            val localDate = LocalDateTime.parse(
+                item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
+            )
+
+            if (minus24h.isBefore(localDate)) break
+            if (minus12h.isBefore(localDate)) break
+
+            if (item.type == pm10) {
+                value24h10pm += item.value?.toFloat() ?: 0f
+                counter24h10pm++
+            } else {
+                value24h25pm += item.value?.toFloat() ?: 0f
+                counter24h25pm++
+            }
+        }
+
+        this.sensorValueCounter = sensorValueCounter.copy(
+            value24h10pm = sensorValueCounter.value24h10pm - value24h10pm,
+            value24h25pm = sensorValueCounter.value24h25pm - value24h25pm,
+            counter24h10pm = sensorValueCounter.counter24h10pm - counter24h10pm,
+            counter24h25pm = sensorValueCounter.counter24h25pm - counter24h25pm,
         )
     }
 }
