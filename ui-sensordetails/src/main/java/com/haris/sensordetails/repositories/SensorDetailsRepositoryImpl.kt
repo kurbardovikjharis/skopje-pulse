@@ -17,7 +17,9 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
     private val api: SensorDetailsApi
 ) : SensorDetailsRepository {
 
-    private var entity: SensorDetailsEntity? = null
+    private var sensorValues = listOf<SensorDetailsDto>()
+    private var lastUpdate: LocalDateTime? = null
+    private var sensorValueCounter: SensorValueCounter? = null
 
     private val _data: MutableStateFlow<NetworkResult<SensorDetailsEntity>> =
         MutableStateFlow(NetworkResult.None())
@@ -26,21 +28,12 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
         get() = _data
 
     override suspend fun getSensors() {
-        val now = LocalDateTime.now()
-        val minus1h = now.minus(1, ChronoUnit.HOURS)
-
-        val entity = entity
-        if (minus1h.isBefore(now) && entity != null) {
-            _data.value = NetworkResult.Success(entity)
-            return
-        }
-
         _data.value = NetworkResult.Loading()
         try {
             val response = api.getSensors()
             val body = response.body()
             if (response.isSuccessful && body != null) {
-                _data.value = NetworkResult.Success(map(body, now))
+                _data.value = NetworkResult.Success(map(body))
             } else {
                 _data.value = NetworkResult.Error(response.message())
             }
@@ -50,72 +43,106 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun map(data: List<SensorDetailsDto>, now: LocalDateTime): SensorDetailsEntity {
+    private fun map(sensorValues: List<SensorDetailsDto>): SensorDetailsEntity {
+        val now = LocalDateTime.now()
         val minus6h = now.minus(6, ChronoUnit.HOURS)
         val minus12h = now.minus(12, ChronoUnit.HOURS)
 
-        var minus6h10pm = 0f
-        var minus12h10pm = 0f
-        var minus24h10pm = 0f
+        var value6h10pm = 0.0
+        var value12h10pm = 0.0
+        var value24h10pm = 0.0
 
-        var minus6h25pm = 0f
-        var minus12h25pm = 0f
-        var minus24h25pm = 0f
+        var value6h25pm = 0.0
+        var value12h25pm = 0.0
+        var value24h25pm = 0.0
 
-        var minus6h10pmCounter = 0
-        var minus12h10pmCounter = 0
-        var minus24h10pmCounter = 0
+        var counter6h10pm = 0
+        var counter12h10pm = 0
+        var counter24h10pm = 0
 
-        var minus6h25pmCounter = 0
-        var minus12h25pmCounter = 0
-        var minus24h25pmCounter = 0
+        var counter6h25pm = 0
+        var counter12h25pm = 0
+        var counter24h25pm = 0
 
-        for (item in data) {
+        for (i in (sensorValues.lastIndex downTo 0)) {
+            val item = sensorValues[i]
             if (item.type != pm10 && item.type != pm25) continue
 
             val localDate = LocalDateTime.parse(
                 item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
             )
 
+            if (lastUpdate?.isAfter(localDate) == true) break
+
             if (minus6h.isBefore(localDate)) {
                 if (item.type == pm10) {
-                    minus6h10pm += item.value?.toFloat() ?: 0f
-                    minus6h10pmCounter++
+                    value6h10pm += item.value?.toFloat() ?: 0f
+                    counter6h10pm++
                 } else {
-                    minus6h25pm += item.value?.toFloat() ?: 0f
-                    minus6h25pmCounter++
+                    value6h25pm += item.value?.toFloat() ?: 0f
+                    counter6h25pm++
                 }
             }
             if (minus12h.isBefore(localDate)) {
                 if (item.type == pm10) {
-                    minus12h10pm += item.value?.toFloat() ?: 0f
-                    minus12h10pmCounter++
+                    value12h10pm += item.value?.toFloat() ?: 0f
+                    counter12h10pm++
                 } else {
-                    minus12h25pm += item.value?.toFloat() ?: 0f
-                    minus12h25pmCounter++
+                    value12h25pm += item.value?.toFloat() ?: 0f
+                    counter12h25pm++
                 }
             }
 
             if (item.type == pm10) {
-                minus24h10pm += item.value?.toFloat() ?: 0f
-                minus24h10pmCounter++
+                value24h10pm += item.value?.toFloat() ?: 0f
+                counter24h10pm++
             } else {
-                minus24h25pm += item.value?.toFloat() ?: 0f
-                minus24h25pmCounter++
+                value24h25pm += item.value?.toFloat() ?: 0f
+                counter24h25pm++
             }
         }
 
-        val entity = SensorDetailsEntity(
-            avg6h10PM = (minus6h10pm / minus6h10pmCounter).toString(),
-            avg12h10PM = (minus12h10pm / minus12h10pmCounter).toString(),
-            avg24h10PM = (minus24h10pm / minus24h10pmCounter).toString(),
-            avg6h25PM = (minus6h25pm / minus6h25pmCounter).toString(),
-            avg12h25PM = (minus12h25pm / minus12h25pmCounter).toString(),
-            avg24h25PM = (minus24h25pm / minus24h25pmCounter).toString(),
+        val svc = SensorValueCounter(
+            value6h10pm = (sensorValueCounter?.value6h10pm ?: 0.0) + value6h10pm,
+            value12h10pm = (sensorValueCounter?.value12h10pm ?: 0.0) + value12h10pm,
+            value24h10pm = (sensorValueCounter?.value24h10pm ?: 0.0) + value24h10pm,
+            value6h25pm = (sensorValueCounter?.value6h25pm ?: 0.0) + value6h25pm,
+            value12h25pm = (sensorValueCounter?.value12h25pm ?: 0.0) + value12h25pm,
+            value24h25pm = (sensorValueCounter?.value24h25pm ?: 0.0) + value24h25pm,
+            counter6h10pm = (sensorValueCounter?.counter6h10pm ?: 0) + counter6h10pm,
+            counter12h10pm = (sensorValueCounter?.counter12h10pm ?: 0) + counter12h10pm,
+            counter24h10pm = (sensorValueCounter?.counter24h10pm ?: 0) + counter24h10pm,
+            counter6h25pm = (sensorValueCounter?.counter6h25pm ?: 0) + counter6h25pm,
+            counter12h25pm = (sensorValueCounter?.counter12h25pm ?: 0) + counter12h25pm,
+            counter24h25pm = (sensorValueCounter?.counter24h25pm ?: 0) + counter24h25pm,
         )
 
-        this.entity = entity
+        this.sensorValueCounter = svc
+        this.sensorValues = sensorValues
+        this.lastUpdate = now
 
-        return entity
+        return SensorDetailsEntity(
+            avg6h10PM = (svc.value6h10pm / svc.counter6h10pm).toString(),
+            avg12h10PM = (svc.value12h10pm / svc.counter12h10pm).toString(),
+            avg24h10PM = (svc.value24h10pm / svc.counter24h10pm).toString(),
+            avg6h25PM = (svc.value6h25pm / svc.counter6h25pm).toString(),
+            avg12h25PM = (svc.value12h25pm / svc.counter12h25pm).toString(),
+            avg24h25PM = (svc.value24h25pm / svc.counter24h25pm).toString()
+        )
     }
 }
+
+private data class SensorValueCounter(
+    val value6h10pm: Double,
+    val value12h10pm: Double,
+    val value24h10pm: Double,
+    val value6h25pm: Double,
+    val value12h25pm: Double,
+    val value24h25pm: Double,
+    val counter6h10pm: Int,
+    val counter12h10pm: Int,
+    val counter24h10pm: Int,
+    val counter6h25pm: Int,
+    val counter12h25pm: Int,
+    val counter24h25pm: Int
+)
