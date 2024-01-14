@@ -2,7 +2,6 @@ package com.haris.skopjepulse.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-
 val md_theme_light_primary = Color(0xFFBD0F1E)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFFFDAD6)
