@@ -108,9 +108,8 @@ internal class Mapper @Inject constructor() {
         )
     }
 
-    private fun removePast24HourValues(now:LocalDateTime) {
+    private fun removePast24HourValues(now: LocalDateTime) {
         val sensorValueCounter = sensorValueCounter ?: return
-        val minus12h = now.minus(12, ChronoUnit.HOURS)
         val minus24h = now.minus(24, ChronoUnit.HOURS)
 
         var value24h10pm = 0.0
@@ -125,7 +124,6 @@ internal class Mapper @Inject constructor() {
             )
 
             if (minus24h.isBefore(localDate)) break
-            if (minus12h.isBefore(localDate)) break
 
             if (item.type == pm10) {
                 value24h10pm += item.value?.toFloat() ?: 0f

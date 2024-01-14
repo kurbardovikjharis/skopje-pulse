@@ -10,6 +10,7 @@ hiltAndroid = "2.50"
 hiltNavigationCompose = "1.1.0"
 kotlin = "1.9.20"
 material3 = "1.1.2"
+mockk = "1.13.9"
 navigationCompose = "2.7.6"
 retrofit = "2.9.0"
 junit = "4.13.2"
@@ -31,6 +32,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
