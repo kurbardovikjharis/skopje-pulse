@@ -3,6 +3,7 @@ package com.haris.sensordetails.di
 import com.haris.sensordetails.repositories.SensorDetailsApi
 import com.haris.sensordetails.repositories.SensorDetailsRepository
 import com.haris.sensordetails.repositories.SensorDetailsRepositoryImpl
+import com.haris.sensordetails.utils.Mapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +24,6 @@ internal object SensorDetailsModule {
     @Singleton
     @Provides
     fun provideRepository(api: SensorDetailsApi): SensorDetailsRepository {
-        return SensorDetailsRepositoryImpl(api)
+        return SensorDetailsRepositoryImpl(api, Mapper())
     }
 }
