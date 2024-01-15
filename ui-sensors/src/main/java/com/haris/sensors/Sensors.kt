@@ -30,7 +30,7 @@ fun Sensors(navigate: (String) -> Unit) {
 }
 
 @Composable
-private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
+internal fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
     val state = viewModel.state.collectAsState().value
 
     Scaffold {
@@ -68,7 +68,7 @@ private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
 }
 
 @Composable
-private fun SuccessView(sensors: List<SensorEntity>, navigate: (String) -> Unit) {
+internal fun SuccessView(sensors: List<SensorEntity>, navigate: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -84,7 +84,7 @@ private fun SuccessView(sensors: List<SensorEntity>, navigate: (String) -> Unit)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Item(item: SensorEntity, navigate: (String) -> Unit) {
+internal fun Item(item: SensorEntity, navigate: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = { navigate(item.sensorId) }

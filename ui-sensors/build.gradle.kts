@@ -11,6 +11,8 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        minSdk = 26
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -58,9 +60,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
