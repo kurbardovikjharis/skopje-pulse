@@ -18,7 +18,8 @@ internal class SensorsRepositoryImpl @Inject constructor(
         get() = _data
 
     override suspend fun getSensors() {
-        _data.value = NetworkResult.Loading()
+        val cachedData = _data.value.data
+        _data.value = NetworkResult.Loading(cachedData)
         try {
             val response = api.getSensors()
             val body = response.body()
@@ -26,12 +27,15 @@ internal class SensorsRepositoryImpl @Inject constructor(
                 _data.value = NetworkResult.Success(body.toSensorEntityList())
             } else {
                 _data.value = NetworkResult.Error(
-                    response.message(),
-                    body?.toSensorEntityList()
+                    message = response.message(),
+                    data = cachedData
                 )
             }
         } catch (e: Exception) {
-            _data.value = NetworkResult.Error(e.message)
+            _data.value = NetworkResult.Error(
+                message = e.message,
+                data = cachedData
+            )
             e.printStackTrace()
         }
     }

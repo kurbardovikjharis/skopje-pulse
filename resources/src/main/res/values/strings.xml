@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SkopjePulse</string>
 
+    <string name="retry">Retry</string>
+
     <string name="sensor_details">Sensor Details</string>
     <string name="back">Back</string>
 

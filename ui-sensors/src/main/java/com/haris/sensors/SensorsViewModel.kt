@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SensorsViewModel @Inject constructor(
-    getSensorsInteractor: GetSensorsInteractor,
+    private val getSensorsInteractor: GetSensorsInteractor,
 ) : ViewModel() {
 
     init {
@@ -34,11 +34,16 @@ internal class SensorsViewModel @Inject constructor(
             }
 
             is NetworkResult.Loading -> {
-                SensorsViewState.Loading
+                SensorsViewState.Loading(
+                    sensors = it.data
+                )
             }
 
             is NetworkResult.Error -> {
-                SensorsViewState.Error(it.message ?: "")
+                SensorsViewState.Error(
+                    message = it.message ?: "",
+                    sensors = it.data
+                )
             }
 
             is NetworkResult.None -> SensorsViewState.Empty
@@ -48,6 +53,12 @@ internal class SensorsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(),
         initialValue = SensorsViewState.Empty
     )
+
+    fun retry() {
+        viewModelScope.launch {
+            getSensorsInteractor()
+        }
+    }
 }
 
 @Immutable
@@ -57,9 +68,13 @@ internal sealed interface SensorsViewState {
         val sensors: List<SensorEntity>
     ) : SensorsViewState
 
-    data class Error(val message: String) : SensorsViewState
+    data class Error(
+        val message: String, val sensors: List<SensorEntity>?
+    ) : SensorsViewState
 
-    data object Loading : SensorsViewState
+    data class Loading(
+        val sensors: List<SensorEntity>?
+    ) : SensorsViewState
 
     data object Empty : SensorsViewState
 }
