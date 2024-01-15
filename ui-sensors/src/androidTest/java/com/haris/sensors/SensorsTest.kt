@@ -13,7 +13,7 @@ class SensorsTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun loginTest() {
+    fun sensorsTest() {
         composeTestRule.setContent {
             SuccessView(
                 sensors = listOf(
@@ -22,9 +22,9 @@ class SensorsTest {
                         description = "description"
                     )
                 )
-            ) {
-
-            }
+            ) {}
         }
+
+        composeTestRule.onNodeWithText("description").assertIsDisplayed()
     }
 }

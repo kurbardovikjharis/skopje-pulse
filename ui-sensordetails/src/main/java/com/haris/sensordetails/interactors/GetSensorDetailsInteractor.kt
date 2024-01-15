@@ -10,6 +10,6 @@ internal class GetSensorDetailsInteractor @Inject constructor(
     val flow = repository.data
 
     suspend operator fun invoke() {
-        repository.getSensors()
+        repository.getSensorDetails()
     }
 }

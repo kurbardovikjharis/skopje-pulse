@@ -89,7 +89,7 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
 }
 
 @Composable
-private fun SuccessView(
+internal fun SuccessView(
     state: SensorDetailsViewState.Success,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
