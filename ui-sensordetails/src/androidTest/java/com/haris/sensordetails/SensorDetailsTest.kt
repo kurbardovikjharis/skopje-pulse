@@ -1,7 +1,6 @@
 package com.haris.sensordetails
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
@@ -76,7 +75,13 @@ class SensorDetailsTest {
             HandleState(
                 state = SensorDetailsViewState.Error(
                     message = "error",
-                    data = null
+                    data = DetailsData(
+                        isPM10Checked = true,
+                        isPM25Checked = false,
+                        avg6h = "1",
+                        avg12h = "2",
+                        avg24h = "3"
+                    )
                 ),
                 onPM10Checked = {},
                 onPM25Checked = {}

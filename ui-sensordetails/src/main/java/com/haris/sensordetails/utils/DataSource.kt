@@ -12,8 +12,8 @@ private const val pm10 = "pm10"
 private const val pm25 = "pm25"
 
 /*
-The first time, the mapper simply filters the data and creates an instance of SensorDetailsEntity.
-The second time, once the data is cached, the mapper only iterates until the last update.
+The first time, the DataSource simply filters the data and creates an instance of SensorDetailsEntity.
+The second time, once the data is cached, it only iterates until the last update.
 
 EG: if the user fetches new data after a minute and there are 3 new entries, we only iterate
 through the 3 new entries, instead of around 25k.
@@ -22,7 +22,7 @@ removePast24HourValues() is also called since we have to remove the data which i
 than 24h - this means additional 1 minute of data iteration (few entries).
 */
 @Singleton
-internal class Mapper @Inject constructor() {
+internal class DataSource @Inject constructor() {
 
     private var cachedSensorValues = emptyList<SensorDetailsDto>()
     private var sensorValueCounterMap = mutableMapOf<String, SensorValueCounter>()
@@ -115,7 +115,7 @@ internal class Mapper @Inject constructor() {
         sensorValueCounterMap[id] = sensorValueCounter
         cachedSensorValues = sensorValues
         lastUpdate = now
-        
+
         return sensorValueCounter.toSensorDetailsEntity()
     }
 

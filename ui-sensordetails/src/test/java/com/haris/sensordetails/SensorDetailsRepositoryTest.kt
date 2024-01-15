@@ -1,7 +1,7 @@
 package com.haris.sensordetails
 
 import com.haris.sensordetails.data.SensorDetailsDto
-import com.haris.sensordetails.utils.Mapper
+import com.haris.sensordetails.utils.DataSource
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 class SensorDetailsRepositoryTest {
 
     private val base = SensorDetailsDto(
-        sensorId = null,
+        sensorId = "1",
         stamp = null,
         year = null,
         type = null,
@@ -40,11 +40,11 @@ class SensorDetailsRepositoryTest {
         base.copy(stamp = "2024-01-15T00:30:00+01:00", type = "pm25", value = "2"),
     )
 
-    private val mapper = Mapper()
+    private val dataSource = DataSource()
 
     @Test
-    fun testMapper() {
-        val values = mapper.map(sensorValues)
+    fun testDataSource() {
+        val values = dataSource.map(sensorValues, "1")
 
         assert(values.avg6h10PM == 2.0)
         assert(values.avg12h10PM == 4.0)
@@ -56,20 +56,20 @@ class SensorDetailsRepositoryTest {
     }
 
     @Test
-    fun testMapperCache() {
-        mapper.map(sensorValues)
+    fun testDataSourceCache() {
+        dataSource.map(sensorValues, "1")
 
         val sensorValues = listOf(
             base.copy(stamp = "2024-01-15T23:51:00+01:00", type = "pm10", value = "6"),
         )
 
         // modify lastUpdate to be equal to 'sensorValues' latest item
-        mapper.lastUpdate = LocalDateTime.parse(
+        dataSource.lastUpdate = LocalDateTime.parse(
             "2024-01-15T21:30:00+01:00",
             DateTimeFormatter.ISO_ZONED_DATE_TIME
         )
 
-        val values2 = mapper.map(sensorValues)
+        val values2 = dataSource.map(sensorValues, "1")
 
         assert(values2.avg6h10PM == 3.0)
     }

@@ -1,5 +1,6 @@
 package com.haris.sensordetails
 
+import androidx.lifecycle.SavedStateHandle
 import com.haris.data.network.NetworkResult
 import com.haris.sensordetails.interactors.GetSensorDetailsInteractor
 import io.mockk.every
@@ -27,13 +28,15 @@ class SensorsViewModelTest {
     private lateinit var viewModel: SensorDetailsViewModel
 
     private val mockedGetSensorDetailsInteractor = mockk<GetSensorDetailsInteractor>()
+    private val savedStateHandle = mockk<SavedStateHandle>()
 
     @Before
     fun setup() {
-        every { runBlocking { mockedGetSensorDetailsInteractor() } } returns Unit
+        every { runBlocking { mockedGetSensorDetailsInteractor("1") } } returns Unit
         every { mockedGetSensorDetailsInteractor.flow } answers { MutableStateFlow(NetworkResult.None()) }
+        every { savedStateHandle.get<String>("sensorId") } answers { "1" }
 
-        viewModel = SensorDetailsViewModel(mockedGetSensorDetailsInteractor)
+        viewModel = SensorDetailsViewModel(savedStateHandle, mockedGetSensorDetailsInteractor)
     }
 
     @Test
