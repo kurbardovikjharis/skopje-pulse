@@ -1,5 +1,6 @@
 package com.haris.sensordetails
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haris.data.network.NetworkResult
@@ -15,17 +16,24 @@ import kotlinx.coroutines.launch
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
+const val SENSOR_ID = "sensorId"
+
 @HiltViewModel
 internal class SensorDetailsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     getSensorDetailsInteractor: GetSensorDetailsInteractor
 ) : ViewModel() {
+
+    private val id: String? = savedStateHandle.get<String>(SENSOR_ID)
 
     private val isPM10Checked = MutableStateFlow(true)
     private val isPM25Checked = MutableStateFlow(false)
 
     init {
-        viewModelScope.launch {
-            getSensorDetailsInteractor()
+        if (id != null) {
+            viewModelScope.launch {
+                getSensorDetailsInteractor(id)
+            }
         }
     }
 
@@ -91,10 +99,10 @@ internal sealed interface SensorDetailsViewState {
     ) : SensorDetailsViewState
 
     data class Error(
-        val message: String, val data: DetailsData?
+        val message: String, val data: DetailsData
     ) : SensorDetailsViewState
 
-    data class Loading(val data: DetailsData?) : SensorDetailsViewState
+    data class Loading(val data: DetailsData) : SensorDetailsViewState
 
     data object Empty : SensorDetailsViewState
 }
@@ -106,4 +114,6 @@ internal data class DetailsData(
     val avg6h: String,
     val avg12h: String,
     val avg24h: String
-)
+) {
+    fun isEmpty() = avg6h.isEmpty() && avg12h.isEmpty() && avg24h.isEmpty()
+}

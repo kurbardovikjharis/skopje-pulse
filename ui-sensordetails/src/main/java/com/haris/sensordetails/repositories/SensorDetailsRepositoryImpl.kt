@@ -19,26 +19,26 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
     override val data: Flow<NetworkResult<SensorDetailsEntity>>
         get() = _data
 
-    override suspend fun getSensorDetails() {
-        val cachedData = _data.value.data
+    override suspend fun getSensorDetails(id: String) {
+        val cachedData = mapper.getCachedData(id)
         _data.value = NetworkResult.Loading(cachedData)
 
         try {
             val response = api.getSensors()
             val body = response.body()
             if (response.isSuccessful && body != null) {
-                _data.value = NetworkResult.Success(mapper.map(body))
+                _data.value = NetworkResult.Success(mapper.map(body, id))
             } else {
                 _data.value = NetworkResult.Error(
-                    response.message(),
-                    cachedData
+                    message = response.message(),
+                    data = cachedData
                 )
             }
         } catch (exception: Exception) {
             Timber.e(exception)
             _data.value = NetworkResult.Error(
-                exception.message,
-                cachedData
+                message = exception.message,
+                data = cachedData
             )
         }
     }

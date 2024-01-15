@@ -24,11 +24,16 @@ than 24h - this means additional 1 minute of data iteration (few entries).
 @Singleton
 internal class Mapper @Inject constructor() {
 
-    private var sensorValues = listOf<SensorDetailsDto>()
-    internal var lastUpdate: LocalDateTime? = null
-    private var sensorValueCounter: SensorValueCounter? = null
+    private var cachedSensorValues = emptyList<SensorDetailsDto>()
+    private var sensorValueCounterMap = mutableMapOf<String, SensorValueCounter>()
 
-    fun map(sensorValues: List<SensorDetailsDto>): SensorDetailsEntity {
+    internal var lastUpdate: LocalDateTime? = null
+
+    fun getCachedData(id: String): SensorDetailsEntity? {
+        return sensorValueCounterMap[id]?.toSensorDetailsEntity()
+    }
+
+    fun map(sensorValues: List<SensorDetailsDto>, id: String): SensorDetailsEntity {
         val now = LocalDateTime.now()
         val minus6h = now.minus(6, ChronoUnit.HOURS)
         val minus12h = now.minus(12, ChronoUnit.HOURS)
@@ -51,7 +56,9 @@ internal class Mapper @Inject constructor() {
 
         for (i in (sensorValues.lastIndex downTo 0)) {
             val item = sensorValues[i]
+
             if (item.type != pm10 && item.type != pm25) continue
+            if (item.sensorId != id) continue
 
             val localDate = LocalDateTime.parse(
                 item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
@@ -87,39 +94,33 @@ internal class Mapper @Inject constructor() {
             }
         }
 
-        removePast24HourValues(now)
+        removePast24HourValues(now, id)
 
+        val cachedSensorValueCounter = sensorValueCounterMap[id]
         val sensorValueCounter = SensorValueCounter(
-            value6h10pm = (sensorValueCounter?.value6h10pm ?: 0.0) + value6h10pm,
-            value12h10pm = (sensorValueCounter?.value12h10pm ?: 0.0) + value12h10pm,
-            value24h10pm = (sensorValueCounter?.value24h10pm ?: 0.0) + value24h10pm,
-            value6h25pm = (sensorValueCounter?.value6h25pm ?: 0.0) + value6h25pm,
-            value12h25pm = (sensorValueCounter?.value12h25pm ?: 0.0) + value12h25pm,
-            value24h25pm = (sensorValueCounter?.value24h25pm ?: 0.0) + value24h25pm,
-            counter6h10pm = (sensorValueCounter?.counter6h10pm ?: 0) + counter6h10pm,
-            counter12h10pm = (sensorValueCounter?.counter12h10pm ?: 0) + counter12h10pm,
-            counter24h10pm = (sensorValueCounter?.counter24h10pm ?: 0) + counter24h10pm,
-            counter6h25pm = (sensorValueCounter?.counter6h25pm ?: 0) + counter6h25pm,
-            counter12h25pm = (sensorValueCounter?.counter12h25pm ?: 0) + counter12h25pm,
-            counter24h25pm = (sensorValueCounter?.counter24h25pm ?: 0) + counter24h25pm,
+            value6h10pm = (cachedSensorValueCounter?.value6h10pm ?: 0.0) + value6h10pm,
+            value12h10pm = (cachedSensorValueCounter?.value12h10pm ?: 0.0) + value12h10pm,
+            value24h10pm = (cachedSensorValueCounter?.value24h10pm ?: 0.0) + value24h10pm,
+            value6h25pm = (cachedSensorValueCounter?.value6h25pm ?: 0.0) + value6h25pm,
+            value12h25pm = (cachedSensorValueCounter?.value12h25pm ?: 0.0) + value12h25pm,
+            value24h25pm = (cachedSensorValueCounter?.value24h25pm ?: 0.0) + value24h25pm,
+            counter6h10pm = (cachedSensorValueCounter?.counter6h10pm ?: 0) + counter6h10pm,
+            counter12h10pm = (cachedSensorValueCounter?.counter12h10pm ?: 0) + counter12h10pm,
+            counter24h10pm = (cachedSensorValueCounter?.counter24h10pm ?: 0) + counter24h10pm,
+            counter6h25pm = (cachedSensorValueCounter?.counter6h25pm ?: 0) + counter6h25pm,
+            counter12h25pm = (cachedSensorValueCounter?.counter12h25pm ?: 0) + counter12h25pm,
+            counter24h25pm = (cachedSensorValueCounter?.counter24h25pm ?: 0) + counter24h25pm,
         )
 
-        this.sensorValueCounter = sensorValueCounter
-        this.sensorValues = sensorValues
-        this.lastUpdate = now
-
-        return SensorDetailsEntity(
-            avg6h10PM = sensorValueCounter.value6h10pm / sensorValueCounter.counter6h10pm,
-            avg12h10PM = sensorValueCounter.value12h10pm / sensorValueCounter.counter12h10pm,
-            avg24h10PM = sensorValueCounter.value24h10pm / sensorValueCounter.counter24h10pm,
-            avg6h25PM = sensorValueCounter.value6h25pm / sensorValueCounter.counter6h25pm,
-            avg12h25PM = sensorValueCounter.value12h25pm / sensorValueCounter.counter12h25pm,
-            avg24h25PM = sensorValueCounter.value24h25pm / sensorValueCounter.counter24h25pm
-        )
+        sensorValueCounterMap[id] = sensorValueCounter
+        cachedSensorValues = sensorValues
+        lastUpdate = now
+        
+        return sensorValueCounter.toSensorDetailsEntity()
     }
 
-    private fun removePast24HourValues(now: LocalDateTime) {
-        val sensorValueCounter = sensorValueCounter ?: return
+    private fun removePast24HourValues(now: LocalDateTime, id: String) {
+        val sensorValueCounter = sensorValueCounterMap[id] ?: return
         val minus24h = now.minus(24, ChronoUnit.HOURS)
 
         var value24h10pm = 0.0
@@ -128,12 +129,13 @@ internal class Mapper @Inject constructor() {
         var counter24h10pm = 0
         var counter24h25pm = 0
 
-        for (item in sensorValues) {
+        for (item in cachedSensorValues) {
             val localDate = LocalDateTime.parse(
                 item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
             )
 
             if (minus24h.isBefore(localDate)) break
+            if (item.sensorId != id) continue
 
             if (item.type == pm10) {
                 value24h10pm += item.value?.toFloat() ?: 0f
@@ -144,7 +146,7 @@ internal class Mapper @Inject constructor() {
             }
         }
 
-        this.sensorValueCounter = sensorValueCounter.copy(
+        sensorValueCounterMap[id] = sensorValueCounter.copy(
             value24h10pm = sensorValueCounter.value24h10pm - value24h10pm,
             value24h25pm = sensorValueCounter.value24h25pm - value24h25pm,
             counter24h10pm = sensorValueCounter.counter24h10pm - counter24h10pm,
@@ -167,3 +169,26 @@ private data class SensorValueCounter(
     val counter12h25pm: Int,
     val counter24h25pm: Int
 )
+
+private fun SensorValueCounter.toSensorDetailsEntity(): SensorDetailsEntity {
+    return SensorDetailsEntity(
+        avg6h10PM =
+        if (value6h10pm == 0.0 || counter6h10pm == 0) 0.0
+        else value6h10pm / counter6h10pm,
+        avg12h10PM =
+        if (value12h10pm == 0.0 || counter12h10pm == 0) 0.0
+        else value12h10pm / counter12h10pm,
+        avg24h10PM =
+        if (value24h10pm == 0.0 || counter24h10pm == 0) 0.0
+        else value24h10pm / counter24h10pm,
+        avg6h25PM =
+        if (value6h25pm == 0.0 || counter6h25pm == 0) 0.0
+        else value6h25pm / counter6h25pm,
+        avg12h25PM =
+        if (value12h25pm == 0.0 || counter12h25pm == 0) 0.0
+        else value12h25pm / counter12h25pm,
+        avg24h25PM =
+        if (value24h25pm == 0.0 || counter24h25pm == 0) 0.0
+        else value24h25pm / counter24h25pm,
+    )
+}

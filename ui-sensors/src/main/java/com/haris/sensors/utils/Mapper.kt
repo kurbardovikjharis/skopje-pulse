@@ -7,6 +7,7 @@ fun List<SensorDto>.toSensorEntityList(): List<SensorEntity> {
     val list = mutableListOf<SensorEntity>()
 
     for (item in this) {
+        if (item.sensorId == null) continue
         list.add(item.toSensorEntity())
     }
 

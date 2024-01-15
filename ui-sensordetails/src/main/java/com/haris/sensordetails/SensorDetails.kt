@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -120,10 +122,13 @@ private fun Error(
     onPM25Checked: (Boolean) -> Unit
 ) {
     Column(
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.data != null) {
+        if (state.data.isEmpty()) {
+            Spacer(modifier = Modifier.height(32.dp))
+        } else {
             DetailsData(
                 data = state.data,
                 onPM10Checked = onPM10Checked,
@@ -144,10 +149,13 @@ private fun Loading(
     onPM25Checked: (Boolean) -> Unit
 ) {
     Column(
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.data != null) {
+        if (state.data.isEmpty()) {
+            Spacer(modifier = Modifier.height(32.dp))
+        } else {
             DetailsData(
                 data = state.data,
                 onPM10Checked = onPM10Checked,

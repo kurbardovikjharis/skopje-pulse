@@ -34,9 +34,9 @@ private sealed class LeafScreen(
 
     data object Sensors : LeafScreen("sensors")
 
-    data object SensorDetails : LeafScreen("sensor_details/{id}") {
-        fun createRoute(root: Screen, id: String?): String {
-            return "${root.route}/sensor_details/$id"
+    data object SensorDetails : LeafScreen("sensor_details/{sensorId}") {
+        fun createRoute(root: Screen, sensorId: String?): String {
+            return "${root.route}/sensor_details/$sensorId"
         }
     }
 }
@@ -96,7 +96,7 @@ private fun NavGraphBuilder.addSensorDetails(
     composable(
         route = LeafScreen.SensorDetails.createRoute(root),
         arguments = listOf(
-            navArgument("id") { type = NavType.StringType },
+            navArgument("sensorId") { type = NavType.StringType },
         ),
     ) {
         SensorDetails(navController::navigateUp)
