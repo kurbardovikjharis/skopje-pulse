@@ -15,7 +15,7 @@ private const val pm25 = "pm25"
 internal class Mapper @Inject constructor() {
 
     private var sensorValues = listOf<SensorDetailsDto>()
-    private var lastUpdate: LocalDateTime? = null
+    internal var lastUpdate: LocalDateTime? = null
     private var sensorValueCounter: SensorValueCounter? = null
 
     fun map(sensorValues: List<SensorDetailsDto>): SensorDetailsEntity {
