@@ -79,7 +79,7 @@ internal class Mapper @Inject constructor() {
 
         removePast24HourValues(now)
 
-        val svc = SensorValueCounter(
+        val sensorValueCounter = SensorValueCounter(
             value6h10pm = (sensorValueCounter?.value6h10pm ?: 0.0) + value6h10pm,
             value12h10pm = (sensorValueCounter?.value12h10pm ?: 0.0) + value12h10pm,
             value24h10pm = (sensorValueCounter?.value24h10pm ?: 0.0) + value24h10pm,
@@ -94,17 +94,17 @@ internal class Mapper @Inject constructor() {
             counter24h25pm = (sensorValueCounter?.counter24h25pm ?: 0) + counter24h25pm,
         )
 
-        this.sensorValueCounter = svc
+        this.sensorValueCounter = sensorValueCounter
         this.sensorValues = sensorValues
         this.lastUpdate = now
 
         return SensorDetailsEntity(
-            avg6h10PM = (svc.value6h10pm / svc.counter6h10pm).toString(),
-            avg12h10PM = (svc.value12h10pm / svc.counter12h10pm).toString(),
-            avg24h10PM = (svc.value24h10pm / svc.counter24h10pm).toString(),
-            avg6h25PM = (svc.value6h25pm / svc.counter6h25pm).toString(),
-            avg12h25PM = (svc.value12h25pm / svc.counter12h25pm).toString(),
-            avg24h25PM = (svc.value24h25pm / svc.counter24h25pm).toString()
+            avg6h10PM = sensorValueCounter.value6h10pm / sensorValueCounter.counter6h10pm,
+            avg12h10PM = sensorValueCounter.value12h10pm / sensorValueCounter.counter12h10pm,
+            avg24h10PM = sensorValueCounter.value24h10pm / sensorValueCounter.counter24h10pm,
+            avg6h25PM = sensorValueCounter.value6h25pm / sensorValueCounter.counter6h25pm,
+            avg12h25PM = sensorValueCounter.value12h25pm / sensorValueCounter.counter12h25pm,
+            avg24h25PM = sensorValueCounter.value24h25pm / sensorValueCounter.counter24h25pm
         )
     }
 

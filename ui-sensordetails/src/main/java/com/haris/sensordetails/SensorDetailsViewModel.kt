@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haris.data.network.NetworkResult
 import com.haris.sensordetails.interactors.GetSensorDetailsInteractor
+import com.haris.sensordetails.utils.averageToString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,9 +40,15 @@ internal class SensorDetailsViewModel @Inject constructor(
                 SensorDetailsViewState.Success(
                     isPM10Checked = isPM10Checked,
                     isPM25Checked = isPM25Checked,
-                    avg6h = if (isPM10Checked) data?.avg6h10PM ?: "" else data?.avg6h25PM ?: "",
-                    avg12h = if (isPM10Checked) data?.avg12h10PM ?: "" else data?.avg12h25PM ?: "",
-                    avg24h = if (isPM10Checked) data?.avg24h10PM ?: "" else data?.avg24h25PM ?: "",
+                    avg6h =
+                    if (isPM10Checked) averageToString(data?.avg6h10PM)
+                    else averageToString(data?.avg6h25PM),
+                    avg12h =
+                    if (isPM10Checked) averageToString(data?.avg12h10PM)
+                    else averageToString(data?.avg12h25PM),
+                    avg24h =
+                    if (isPM10Checked) averageToString(data?.avg24h10PM)
+                    else averageToString(data?.avg24h25PM)
                 )
             }
 
