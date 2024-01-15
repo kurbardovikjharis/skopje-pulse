@@ -34,30 +34,34 @@ internal class SensorDetailsViewModel @Inject constructor(
         isPM10Checked,
         isPM25Checked
     ) { sensorDetailsResult, isPM10Checked, isPM25Checked ->
+        val data = sensorDetailsResult.data
+        val detailsData = DetailsData(
+            isPM10Checked = isPM10Checked,
+            isPM25Checked = isPM25Checked,
+            avg6h =
+            if (isPM10Checked) averageToString(data?.avg6h10PM)
+            else averageToString(data?.avg6h25PM),
+            avg12h =
+            if (isPM10Checked) averageToString(data?.avg12h10PM)
+            else averageToString(data?.avg12h25PM),
+            avg24h =
+            if (isPM10Checked) averageToString(data?.avg24h10PM)
+            else averageToString(data?.avg24h25PM)
+        )
         when (sensorDetailsResult) {
             is NetworkResult.Success -> {
-                val data = sensorDetailsResult.data
-                SensorDetailsViewState.Success(
-                    isPM10Checked = isPM10Checked,
-                    isPM25Checked = isPM25Checked,
-                    avg6h =
-                    if (isPM10Checked) averageToString(data?.avg6h10PM)
-                    else averageToString(data?.avg6h25PM),
-                    avg12h =
-                    if (isPM10Checked) averageToString(data?.avg12h10PM)
-                    else averageToString(data?.avg12h25PM),
-                    avg24h =
-                    if (isPM10Checked) averageToString(data?.avg24h10PM)
-                    else averageToString(data?.avg24h25PM)
-                )
+                SensorDetailsViewState.Success(detailsData)
             }
 
             is NetworkResult.Loading -> {
-                SensorDetailsViewState.Loading
+                SensorDetailsViewState.Loading(detailsData)
             }
 
             is NetworkResult.Error -> {
-                SensorDetailsViewState.Error(sensorDetailsResult.message ?: "")
+                SensorDetailsViewState.Error(
+                    sensorDetailsResult.message ?: "",
+                    detailsData
+                )
             }
 
             is NetworkResult.None -> SensorDetailsViewState.Empty
@@ -83,16 +87,23 @@ internal class SensorDetailsViewModel @Inject constructor(
 internal sealed interface SensorDetailsViewState {
 
     data class Success(
-        val isPM10Checked: Boolean,
-        val isPM25Checked: Boolean,
-        val avg6h: String,
-        val avg12h: String,
-        val avg24h: String,
+        val data: DetailsData
     ) : SensorDetailsViewState
 
-    data class Error(val message: String) : SensorDetailsViewState
+    data class Error(
+        val message: String, val data: DetailsData?
+    ) : SensorDetailsViewState
 
-    data object Loading : SensorDetailsViewState
+    data class Loading(val data: DetailsData?) : SensorDetailsViewState
 
     data object Empty : SensorDetailsViewState
 }
+
+@Immutable
+internal data class DetailsData(
+    val isPM10Checked: Boolean,
+    val isPM25Checked: Boolean,
+    val avg6h: String,
+    val avg12h: String,
+    val avg24h: String
+)

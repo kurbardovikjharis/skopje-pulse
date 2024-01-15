@@ -19,17 +19,25 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
         get() = _data
 
     override suspend fun getSensorDetails() {
-        _data.value = NetworkResult.Loading()
+        val cachedData = _data.value.data
+        _data.value = NetworkResult.Loading(cachedData)
+
         try {
             val response = api.getSensors()
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 _data.value = NetworkResult.Success(mapper.map(body))
             } else {
-                _data.value = NetworkResult.Error(response.message())
+                _data.value = NetworkResult.Error(
+                    response.message(),
+                    cachedData
+                )
             }
         } catch (e: Exception) {
-            _data.value = NetworkResult.Error(e.message)
+            _data.value = NetworkResult.Error(
+                e.message,
+                cachedData
+            )
             e.printStackTrace()
         }
     }

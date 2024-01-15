@@ -39,7 +39,7 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Sensor details") },
+                title = { Text(text = stringResource(id = R.string.sensor_details)) },
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
                         Icon(
@@ -56,41 +56,113 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
                 .fillMaxSize()
                 .padding(it)
         ) {
-            when (state) {
-                is SensorDetailsViewState.Success -> {
-                    SuccessView(
-                        state = state,
-                        onPM10Checked = { checked -> viewModel.onPM10Checked(checked) },
-                        onPM25Checked = { checked -> viewModel.onPM25Checked(checked) }
-                    )
-                }
-
-                is SensorDetailsViewState.Error -> {
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp),
-                        text = state.message
-                    )
-                }
-
-                is SensorDetailsViewState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-
-                is SensorDetailsViewState.Empty -> {}
-            }
+            HandleState(
+                state,
+                { checked -> viewModel.onPM10Checked(checked) },
+                { checked -> viewModel.onPM25Checked(checked) }
+            )
         }
     }
 }
 
 @Composable
-internal fun SuccessView(
+private fun HandleState(
+    state: SensorDetailsViewState,
+    onPM10Checked: (Boolean) -> Unit,
+    onPM25Checked: (Boolean) -> Unit
+) {
+    when (state) {
+        is SensorDetailsViewState.Success -> {
+            Success(
+                state = state,
+                onPM10Checked = onPM10Checked,
+                onPM25Checked = onPM25Checked
+            )
+        }
+
+        is SensorDetailsViewState.Error -> {
+            Error(
+                state = state,
+                onPM10Checked = onPM10Checked,
+                onPM25Checked = onPM25Checked
+            )
+        }
+
+        is SensorDetailsViewState.Loading -> {
+            Loading(
+                state = state,
+                onPM10Checked = onPM10Checked,
+                onPM25Checked = onPM25Checked
+            )
+        }
+
+        is SensorDetailsViewState.Empty -> {}
+    }
+}
+
+@Composable
+internal fun Success(
     state: SensorDetailsViewState.Success,
+    onPM10Checked: (Boolean) -> Unit,
+    onPM25Checked: (Boolean) -> Unit
+) {
+    DetailsData(
+        data = state.data,
+        onPM10Checked = onPM10Checked,
+        onPM25Checked = onPM25Checked
+    )
+}
+
+@Composable
+internal fun Error(
+    state: SensorDetailsViewState.Error,
+    onPM10Checked: (Boolean) -> Unit,
+    onPM25Checked: (Boolean) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (state.data != null) {
+            DetailsData(
+                data = state.data,
+                onPM10Checked = onPM10Checked,
+                onPM25Checked = onPM25Checked
+            )
+        }
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text = state.message
+        )
+    }
+}
+
+@Composable
+internal fun Loading(
+    state: SensorDetailsViewState.Loading,
+    onPM10Checked: (Boolean) -> Unit,
+    onPM25Checked: (Boolean) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (state.data != null) {
+            DetailsData(
+                data = state.data,
+                onPM10Checked = onPM10Checked,
+                onPM25Checked = onPM25Checked
+            )
+        }
+        CircularProgressIndicator(
+            modifier = Modifier.size(50.dp)
+        )
+    }
+}
+
+@Composable
+internal fun DetailsData(
+    data: DetailsData,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
 ) {
@@ -103,17 +175,17 @@ internal fun SuccessView(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Switch(checked = state.isPM10Checked, onCheckedChange = onPM10Checked)
+                Switch(checked = data.isPM10Checked, onCheckedChange = onPM10Checked)
                 Text(text = stringResource(id = R.string.pm10))
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Switch(checked = state.isPM25Checked, onCheckedChange = onPM25Checked)
+                Switch(checked = data.isPM25Checked, onCheckedChange = onPM25Checked)
                 Text(text = stringResource(id = R.string.pm25))
             }
         }
 
-        Text(text = stringResource(id = R.string.avg_data, "6", state.avg6h))
-        Text(text = stringResource(id = R.string.avg_data, "12", state.avg12h))
-        Text(text = stringResource(id = R.string.avg_data, "24", state.avg24h))
+        Text(text = stringResource(id = R.string.avg_data, "6", data.avg6h))
+        Text(text = stringResource(id = R.string.avg_data, "12", data.avg12h))
+        Text(text = stringResource(id = R.string.avg_data, "24", data.avg24h))
     }
 }

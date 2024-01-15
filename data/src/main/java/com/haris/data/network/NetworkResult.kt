@@ -8,7 +8,7 @@ sealed class NetworkResult<T>(
 
     class Error<T>(message: String?, data: T? = null) : NetworkResult<T>(data, message)
 
-    class Loading<T> : NetworkResult<T>()
+    class Loading<T>(data: T? = null) : NetworkResult<T>(data)
 
     class None<T> : NetworkResult<T>()
 }
