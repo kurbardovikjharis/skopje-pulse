@@ -52,7 +52,7 @@ private fun Sensors(viewModel: SensorsViewModel, navigate: (String) -> Unit) {
 }
 
 @Composable
-private fun HandleState(state: SensorsViewState, navigate: (String) -> Unit, retry: () -> Unit) {
+internal fun HandleState(state: SensorsViewState, navigate: (String) -> Unit, retry: () -> Unit) {
     when (state) {
         is SensorsViewState.Success -> {
             Success(state = state, navigate = navigate)

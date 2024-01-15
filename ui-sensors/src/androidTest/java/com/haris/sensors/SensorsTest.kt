@@ -13,18 +13,38 @@ class SensorsTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun sensorsTest() {
+    fun sensorsSuccessTest() {
         composeTestRule.setContent {
-            SuccessView(
-                sensors = listOf(
-                    SensorEntity(
-                        sensorId = "1",
-                        description = "description"
+            HandleState(
+                state = SensorsViewState.Success(
+                    sensors = listOf(
+                        SensorEntity(
+                            sensorId = "1",
+                            description = "description"
+                        )
                     )
-                )
-            ) {}
+                ),
+                navigate = {},
+                retry = {}
+            )
         }
 
         composeTestRule.onNodeWithText("description").assertIsDisplayed()
+    }
+
+    @Test
+    fun sensorsErrorTest() {
+        composeTestRule.setContent {
+            HandleState(
+                state = SensorsViewState.Error(
+                    message = "error",
+                    sensors = null,
+                ),
+                navigate = {},
+                retry = {}
+            )
+        }
+
+        composeTestRule.onNodeWithText("error").assertIsDisplayed()
     }
 }

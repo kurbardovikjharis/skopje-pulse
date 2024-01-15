@@ -66,7 +66,7 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
 }
 
 @Composable
-private fun HandleState(
+internal fun HandleState(
     state: SensorDetailsViewState,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
