@@ -1,7 +1,6 @@
 package com.haris.sensors
 
 import com.haris.data.network.NetworkResult
-import com.haris.sensors.data.SensorEntity
 import com.haris.sensors.interactors.GetSensorsInteractor
 import io.mockk.every
 import io.mockk.mockk
@@ -24,13 +23,6 @@ class SensorsViewModelTest {
     @ExperimentalCoroutinesApi
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-
-    private val sensors = listOf(
-        SensorEntity(
-            sensorId = "sensor_id",
-            description = "description"
-        )
-    )
 
     private lateinit var viewModel: SensorsViewModel
 

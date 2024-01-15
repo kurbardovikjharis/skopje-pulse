@@ -1,7 +1,6 @@
 package com.haris.sensordetails
 
 import com.haris.data.network.NetworkResult
-import com.haris.sensordetails.data.SensorDetailsEntity
 import com.haris.sensordetails.interactors.GetSensorDetailsInteractor
 import io.mockk.every
 import io.mockk.mockk
@@ -24,17 +23,6 @@ class SensorsViewModelTest {
     @ExperimentalCoroutinesApi
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-
-    private val sensorDetailsEntity = listOf(
-        SensorDetailsEntity(
-            avg6h10PM = "",
-            avg12h10PM = "",
-            avg24h10PM = "",
-            avg6h25PM = "",
-            avg12h25PM = "",
-            avg24h25PM = ""
-        )
-    )
 
     private lateinit var viewModel: SensorDetailsViewModel
 
