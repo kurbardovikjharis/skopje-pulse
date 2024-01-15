@@ -1,8 +1,8 @@
-package com.haris.sensors
+package com.haris.sensordetails
 
 import com.haris.data.network.NetworkResult
-import com.haris.sensors.data.SensorEntity
-import com.haris.sensors.interactors.GetSensorsInteractor
+import com.haris.sensordetails.data.SensorDetailsEntity
+import com.haris.sensordetails.interactors.GetSensorDetailsInteractor
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -25,30 +25,34 @@ class SensorsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val sensors = listOf(
-        SensorEntity(
-            sensorId = "sensor_id",
-            description = "description"
+    private val sensorDetailsEntity = listOf(
+        SensorDetailsEntity(
+            avg6h10PM = "",
+            avg12h10PM = "",
+            avg24h10PM = "",
+            avg6h25PM = "",
+            avg12h25PM = "",
+            avg24h25PM = ""
         )
     )
 
-    private lateinit var viewModel: SensorsViewModel
+    private lateinit var viewModel: SensorDetailsViewModel
 
-    private val mockedGetSensorsInteractor = mockk<GetSensorsInteractor>()
+    private val mockedGetSensorDetailsInteractor = mockk<GetSensorDetailsInteractor>()
 
     @Before
     fun setup() {
-        every { runBlocking { mockedGetSensorsInteractor() } } returns Unit
-        every { mockedGetSensorsInteractor.flow } answers { MutableStateFlow(NetworkResult.None()) }
+        every { runBlocking { mockedGetSensorDetailsInteractor() } } returns Unit
+        every { mockedGetSensorDetailsInteractor.flow } answers { MutableStateFlow(NetworkResult.None()) }
 
-        viewModel = SensorsViewModel(mockedGetSensorsInteractor)
+        viewModel = SensorDetailsViewModel(mockedGetSensorDetailsInteractor)
     }
 
     @Test
     fun `UiState - When view model is created the ui state is correct`() =
         runTest {
             val state = viewModel.state.value
-            assert(state is SensorsViewState.Empty)
+            assert(state is SensorDetailsViewState.Empty)
         }
 }
 
