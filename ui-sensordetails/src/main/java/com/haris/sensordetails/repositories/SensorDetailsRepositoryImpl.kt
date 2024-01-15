@@ -1,14 +1,10 @@
 package com.haris.sensordetails.repositories
 
 import com.haris.data.network.NetworkResult
-import com.haris.sensordetails.data.SensorDetailsDto
 import com.haris.sensordetails.data.SensorDetailsEntity
 import com.haris.sensordetails.utils.Mapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 internal class SensorDetailsRepositoryImpl @Inject constructor(
@@ -22,7 +18,7 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
     override val data: Flow<NetworkResult<SensorDetailsEntity>>
         get() = _data
 
-    override suspend fun getSensors() {
+    override suspend fun getSensorDetails() {
         _data.value = NetworkResult.Loading()
         try {
             val response = api.getSensors()

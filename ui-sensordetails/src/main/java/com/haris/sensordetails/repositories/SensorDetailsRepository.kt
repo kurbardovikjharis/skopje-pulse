@@ -10,5 +10,5 @@ internal interface SensorDetailsRepository {
 
     val data: Flow<NetworkResult<SensorDetailsEntity>>
 
-    suspend fun getSensors()
+    suspend fun getSensorDetails()
 }
