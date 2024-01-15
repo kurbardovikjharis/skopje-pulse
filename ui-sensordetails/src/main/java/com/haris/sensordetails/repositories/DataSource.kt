@@ -3,6 +3,7 @@ package com.haris.sensordetails.repositories
 import com.haris.sensordetails.data.SensorDetailsDto
 import com.haris.sensordetails.data.SensorDetailsEntity
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -28,8 +29,7 @@ internal class DataSource @Inject constructor() {
 
     private var cachedSensorValues = emptyList<SensorDetailsDto>()
     private var sensorValueCounterMap = mutableMapOf<String, SensorValueCounter>()
-
-    internal var lastUpdate: LocalDateTime? = null
+    private var localDateTimeMap = mutableMapOf<String, Long>()
 
     fun getCachedData(id: String): SensorDetailsEntity? {
         return sensorValueCounterMap[id]?.toSensorDetailsEntity()
@@ -40,6 +40,12 @@ internal class DataSource @Inject constructor() {
         val minus6h = now.minus(6, ChronoUnit.HOURS)
         val minus12h = now.minus(12, ChronoUnit.HOURS)
 
+        val epochSecond = localDateTimeMap[id]
+        val lastUpdate =
+            if (epochSecond != null)
+                LocalDateTime.ofEpochSecond(epochSecond, 0, ZoneOffset.UTC)
+            else null
+        
         var value6h10pm = 0.0
         var value12h10pm = 0.0
         var value24h10pm = 0.0
@@ -56,17 +62,20 @@ internal class DataSource @Inject constructor() {
         var counter12h25pm = 0
         var counter24h25pm = 0
 
+        var counter = 0
         for (i in (sensorValues.lastIndex downTo 0)) {
-            val item = sensorValues[i]
+            counter++
 
-            if (item.type != pm10 && item.type != pm25) continue
-            if (item.sensorId != id) continue
+            val item = sensorValues[i]
 
             val localDate = LocalDateTime.parse(
                 item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
             )
 
             if (lastUpdate?.isAfter(localDate) == true) break
+
+            if (item.type != pm10 && item.type != pm25) continue
+            if (item.sensorId != id) continue
 
             if (minus6h.isBefore(localDate)) {
                 if (item.type == pm10) {
@@ -96,6 +105,8 @@ internal class DataSource @Inject constructor() {
             }
         }
 
+        println("iteration count: $counter")
+
         removePast24HourValues(now, id)
 
         val cachedSensorValueCounter = sensorValueCounterMap[id]
@@ -115,8 +126,8 @@ internal class DataSource @Inject constructor() {
         )
 
         sensorValueCounterMap[id] = sensorValueCounter
+        localDateTimeMap[id] = now.toEpochSecond(ZoneOffset.UTC)
         cachedSensorValues = sensorValues
-        lastUpdate = now
 
         return sensorValueCounter.toSensorDetailsEntity()
     }
@@ -131,12 +142,15 @@ internal class DataSource @Inject constructor() {
         var counter24h10pm = 0
         var counter24h25pm = 0
 
+        var counter = 0
         for (item in cachedSensorValues) {
+            counter++
             val localDate = LocalDateTime.parse(
                 item.stamp, DateTimeFormatter.ISO_ZONED_DATE_TIME
             )
 
             if (minus24h.isBefore(localDate)) break
+
             if (item.sensorId != id) continue
 
             if (item.type == pm10) {
@@ -147,6 +161,8 @@ internal class DataSource @Inject constructor() {
                 counter24h25pm++
             }
         }
+
+        println("iteration count for removing stale entries: $counter")
 
         sensorValueCounterMap[id] = sensorValueCounter.copy(
             value24h10pm = sensorValueCounter.value24h10pm - value24h10pm,
