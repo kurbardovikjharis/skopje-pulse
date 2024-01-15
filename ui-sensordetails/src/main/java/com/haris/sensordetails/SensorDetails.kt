@@ -57,9 +57,9 @@ private fun SensorDetails(viewModel: SensorDetailsViewModel, navigateUp: () -> U
                 .padding(it)
         ) {
             HandleState(
-                state,
-                { checked -> viewModel.onPM10Checked(checked) },
-                { checked -> viewModel.onPM25Checked(checked) }
+                state = state,
+                onPM10Checked = { checked -> viewModel.onPM10Checked(checked) },
+                onPM25Checked = { checked -> viewModel.onPM25Checked(checked) }
             )
         }
     }
@@ -101,7 +101,7 @@ internal fun HandleState(
 }
 
 @Composable
-internal fun Success(
+private fun Success(
     state: SensorDetailsViewState.Success,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
@@ -114,7 +114,7 @@ internal fun Success(
 }
 
 @Composable
-internal fun Error(
+private fun Error(
     state: SensorDetailsViewState.Error,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
@@ -138,7 +138,7 @@ internal fun Error(
 }
 
 @Composable
-internal fun Loading(
+private fun Loading(
     state: SensorDetailsViewState.Loading,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit
@@ -161,7 +161,7 @@ internal fun Loading(
 }
 
 @Composable
-internal fun DetailsData(
+private fun DetailsData(
     data: DetailsData,
     onPM10Checked: (Boolean) -> Unit,
     onPM25Checked: (Boolean) -> Unit

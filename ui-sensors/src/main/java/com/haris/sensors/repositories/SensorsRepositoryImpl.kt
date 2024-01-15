@@ -5,6 +5,7 @@ import com.haris.sensors.data.SensorEntity
 import com.haris.sensors.utils.toSensorEntityList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class SensorsRepositoryImpl @Inject constructor(
@@ -31,12 +32,12 @@ internal class SensorsRepositoryImpl @Inject constructor(
                     data = cachedData
                 )
             }
-        } catch (e: Exception) {
+        } catch (exception: Exception) {
+            Timber.e(exception)
             _data.value = NetworkResult.Error(
-                message = e.message,
+                message = exception.message,
                 data = cachedData
             )
-            e.printStackTrace()
         }
     }
 }

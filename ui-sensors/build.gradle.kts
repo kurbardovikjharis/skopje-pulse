@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.converter.moshi)
 
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

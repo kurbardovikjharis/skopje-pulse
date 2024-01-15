@@ -103,7 +103,7 @@ private fun Error(
 }
 
 @Composable
-internal fun Loading(
+private fun Loading(
     state: SensorsViewState.Loading,
     navigate: (String) -> Unit
 ) {
