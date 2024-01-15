@@ -3,7 +3,7 @@ package com.haris.sensordetails.di
 import com.haris.sensordetails.repositories.SensorDetailsApi
 import com.haris.sensordetails.repositories.SensorDetailsRepository
 import com.haris.sensordetails.repositories.SensorDetailsRepositoryImpl
-import com.haris.sensordetails.utils.DataSource
+import com.haris.sensordetails.repositories.DataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

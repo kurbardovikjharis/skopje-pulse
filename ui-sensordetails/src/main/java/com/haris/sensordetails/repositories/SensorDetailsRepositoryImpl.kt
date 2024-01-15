@@ -2,7 +2,6 @@ package com.haris.sensordetails.repositories
 
 import com.haris.data.network.NetworkResult
 import com.haris.sensordetails.data.SensorDetailsEntity
-import com.haris.sensordetails.utils.DataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber

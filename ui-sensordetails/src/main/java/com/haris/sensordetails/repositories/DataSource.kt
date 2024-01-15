@@ -1,4 +1,4 @@
-package com.haris.sensordetails.utils
+package com.haris.sensordetails.repositories
 
 import com.haris.sensordetails.data.SensorDetailsDto
 import com.haris.sensordetails.data.SensorDetailsEntity
@@ -8,9 +8,6 @@ import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val pm10 = "pm10"
-private const val pm25 = "pm25"
-
 /*
 The first time, the DataSource simply filters the data and creates an instance of SensorDetailsEntity.
 The second time, once the data is cached, it only iterates until the last update.
@@ -19,8 +16,13 @@ EG: if the user fetches new data after a minute and there are 3 new entries, we 
 through the 3 new entries, instead of around 25k.
 
 removePast24HourValues() is also called since we have to remove the data which is stale - older
-than 24h - this means additional 1 minute of data iteration (few entries).
+than 24h - this means additional 1 minute (if called 1 minute after the latest call)
+of data iteration (few entries).
 */
+
+private const val pm10 = "pm10"
+private const val pm25 = "pm25"
+
 @Singleton
 internal class DataSource @Inject constructor() {
 

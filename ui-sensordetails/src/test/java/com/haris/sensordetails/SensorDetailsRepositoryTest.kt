@@ -1,7 +1,7 @@
 package com.haris.sensordetails
 
 import com.haris.sensordetails.data.SensorDetailsDto
-import com.haris.sensordetails.utils.DataSource
+import com.haris.sensordetails.repositories.DataSource
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
