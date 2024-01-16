@@ -2,8 +2,10 @@ package com.haris.sensordetails.repositories
 
 import com.haris.data.network.NetworkResult
 import com.haris.sensordetails.data.SensorDetailsEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,7 +20,7 @@ internal class SensorDetailsRepositoryImpl @Inject constructor(
     override val data: Flow<NetworkResult<SensorDetailsEntity>>
         get() = _data
 
-    override suspend fun getSensorDetails(id: String) {
+    override suspend fun getSensorDetails(id: String) = withContext(Dispatchers.IO) {
         val cachedData = dataSource.getCachedData(id)
         _data.value = NetworkResult.Loading(cachedData)
 
