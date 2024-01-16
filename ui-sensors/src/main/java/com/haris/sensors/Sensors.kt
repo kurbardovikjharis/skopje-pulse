@@ -133,7 +133,7 @@ private fun Sensors(sensors: List<SensorEntity>, navigate: (String) -> Unit) {
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        items(sensors) {
+        items(items = sensors, key = { it.sensorId }) {
             Item(item = it, navigate = navigate)
         }
     }
