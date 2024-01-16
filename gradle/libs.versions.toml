@@ -12,6 +12,7 @@ kotlin = "1.9.20"
 kotlinxCoroutinesTest = "1.7.3"
 material3 = "1.1.2"
 mockk = "1.13.9"
+moshiKotlin = "1.14.0"
 navigationCompose = "2.7.6"
 retrofit = "2.9.0"
 junit = "4.13.2"
@@ -37,6 +38,7 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }

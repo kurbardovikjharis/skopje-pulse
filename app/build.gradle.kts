@@ -70,6 +70,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
 
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)

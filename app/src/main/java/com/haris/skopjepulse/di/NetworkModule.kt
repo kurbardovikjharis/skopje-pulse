@@ -1,5 +1,7 @@
 package com.haris.skopjepulse.di
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,9 +18,15 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun retrofit(): Retrofit {
+    fun moshi(): Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+    @Singleton
+    @Provides
+    fun retrofit(moshi: Moshi): Retrofit {
         return Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 }
