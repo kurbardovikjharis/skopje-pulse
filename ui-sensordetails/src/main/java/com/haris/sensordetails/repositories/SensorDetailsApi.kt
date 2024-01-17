@@ -8,7 +8,7 @@ import retrofit2.http.Url
 internal interface SensorDetailsApi {
 
     @GET
-    suspend fun getSensors(
+    suspend fun getSensorDetails(
         @Url url: String = "https://skopjepulse.mk/rest/data24h"
     ): Response<List<SensorDetailsDto>>
 }

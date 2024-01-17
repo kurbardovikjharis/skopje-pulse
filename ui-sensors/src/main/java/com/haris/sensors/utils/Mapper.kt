@@ -2,17 +2,13 @@ package com.haris.sensors.utils
 
 import com.haris.sensors.data.SensorDto
 import com.haris.sensors.data.SensorEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-fun List<SensorDto>.toSensorEntityList(): List<SensorEntity> {
-    val list = mutableListOf<SensorEntity>()
-
-    for (item in this) {
-        if (item.sensorId == null) continue
-        list.add(item.toSensorEntity())
+suspend fun List<SensorDto>.toSensorEntityList(): List<SensorEntity> =
+    withContext(Dispatchers.IO) {
+        return@withContext map { it.toSensorEntity() }
     }
-
-    return list
-}
 
 fun SensorDto.toSensorEntity(): SensorEntity {
     return SensorEntity(

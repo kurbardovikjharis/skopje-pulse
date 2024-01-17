@@ -1,9 +1,13 @@
-package com.haris.sensordetails.repositories
+package com.haris.sensordetails.datasource
 
+import com.haris.data.network.NetworkResult
 import com.haris.sensordetails.data.SensorDetailsDto
 import com.haris.sensordetails.data.SensorDetailsEntity
+import com.haris.sensordetails.repositories.SensorDetailsApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -27,14 +31,40 @@ private const val pm10 = "pm10"
 private const val pm25 = "pm25"
 
 @Singleton
-internal class DataSource @Inject constructor() {
+internal class RemoteDataSource @Inject constructor(
+    private val api: SensorDetailsApi
+) {
 
     private var cachedSensorValues = emptyList<SensorDetailsDto>()
     private var sensorValueCounterMap = mutableMapOf<String, SensorValueCounter>()
     private var localDateTimeMap = mutableMapOf<String, Long>()
 
-    fun getCachedData(id: String): SensorDetailsEntity? {
-        return sensorValueCounterMap[id]?.toSensorDetailsEntity()
+    suspend fun getSensors(id: String) = flow {
+        val cachedData = sensorValueCounterMap[id]?.toSensorDetailsEntity()
+
+        emit(NetworkResult.Loading(cachedData))
+        try {
+            val response = api.getSensorDetails()
+            val body = response.body()
+            if (response.isSuccessful && body != null) {
+                emit(NetworkResult.Success(map(body, id)))
+            } else {
+                emit(error(message = response.message(), cachedData = cachedData))
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception)
+            emit(error(message = exception.message ?: "", cachedData = cachedData))
+        }
+    }
+
+    private fun error(
+        message: String,
+        cachedData: SensorDetailsEntity?
+    ): NetworkResult.Error<SensorDetailsEntity> {
+        return NetworkResult.Error(
+            message = message,
+            data = cachedData
+        )
     }
 
     suspend fun map(sensorValues: List<SensorDetailsDto>, id: String): SensorDetailsEntity =
