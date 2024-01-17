@@ -37,7 +37,7 @@ internal class RemoteDataSource @Inject constructor(
 
     private var cachedSensorValues = emptyList<SensorDetailsDto>()
     private var sensorValueCounterMap = mutableMapOf<String, SensorValueCounter>()
-    private var localDateTimeMap = mutableMapOf<String, Long>()
+    var localDateTimeMap = mutableMapOf<String, Long>()
 
     suspend fun getSensors(id: String) = flow {
         val cachedData = sensorValueCounterMap[id]?.toSensorDetailsEntity()
